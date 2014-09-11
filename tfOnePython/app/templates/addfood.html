@@ -1,0 +1,25 @@
+		{% extends "base.html" %}
+		{% block content %}
+		<h1>Hello, Friends you can add a new food/ resturant here!!!</h1>
+		<form action="/addfood" method="POST">
+			{{form.hidden_tag()}}
+			<p>
+				Style: {{form.style(size=50)}}<br>
+			</p>
+			<p>
+				Resturant: {{form.resturant(size=50)}}<br>
+			</p>
+			<p>
+				Name of Dish: {{form.dish(size=50)}}<br>
+			</p>
+			<p>
+				Type of Dish: {{form.cat1()}}<br>
+			</p>
+			<p>
+				Type of Meat: {{form.cat2()}}<br>
+			</p>
+			<p>
+				<input type="submit" value="Submit Number">
+			</p>
+		</form>
+		{% endblock %}

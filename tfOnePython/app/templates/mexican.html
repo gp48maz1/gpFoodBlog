@@ -1,4 +1,7 @@
 		{% extends "base.html" %}
 		{% block content %}
 		<h1>Hello, Friends lets talk about Mexican Food!!!</h1>
+		{% for food in foods if food.style == "Mexican" %}
+		<p>From {{food.restaurant}}: {{food.item}}</p>
+		{% endfor %}
 		{% endblock %}
