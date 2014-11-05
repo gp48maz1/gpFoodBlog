@@ -1,6 +1,11 @@
 		{% extends "base.html" %}
 		{% block content %}
 		<h1>Hello, Friends lets talk about Italian Food!!!</h1>
+		<p>This is a list of all the resturants</p>
+		{% for rest in restaurants %}
+		<p>The Italian restaurants are: {{rest}}</p>
+		{% endfor %}		
+		<p>This is a list of all the restuarants and food items</p>
 		{% for food in foods if food.style == "Italian" %}
 		<p>From {{food.restaurant}}: {{food.item}}</p>
 		{% endfor %}

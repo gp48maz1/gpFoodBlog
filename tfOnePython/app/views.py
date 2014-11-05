@@ -1,6 +1,7 @@
-from flask import render_template
+from flask import render_template, redirect, url_for, request
 from app import app
 from addfoodforms import AddForm
+from database import session #where did the database we created last time go?
 
 user = { 'nickname': 'Mazzone'}
 
@@ -14,6 +15,7 @@ foods = [
 		'category1': 'Pasta', #Category 1 is the dish cateogry
 		'category2': 'Any', #Category 2 is the type of meat
 		'item': 'Penne Pasta in Red Sauce'
+		#rating which will be a calculated field -- an average of all ratings posted!@!@#$!#@$!@#%
 		#Do I make an ID to reference which posts are attached to this food item?
 	},
 	{ 
@@ -62,6 +64,23 @@ foods = [
 	}
 ]
 
+posts = [
+	{
+		'ID': '0',
+		'date_entered': '09-09-2014',
+		'userID_entered': '1000',
+		'foodID': '0',
+		'foodPost': 'I love red sauce so much more than white saue!',
+		'like': 'True', #make condition so that only not both like and dislike active -- but can have neither
+		'dislike': 'False',
+		'troll': 'False',
+		'rating': '9' #scale of 1-10
+		#If I want users to be able to like or dislike this comment do I need to make fields for that?
+	}
+]
+
+restaurants = [li['restaurant'] for li in foods] #Find a way to keep the Style so can list in html 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -99,7 +118,8 @@ def italian():
 	return render_template("italian.html",
 		title = 'Italian',
 		user = user,
-		foods = foods)
+		foods = foods,
+		restaurants = restaurants)
 
 @app.route('/styles/mexican')
 def mexican():
@@ -147,13 +167,29 @@ def profile():
 	return render_template("profile.html",
 		title = 'Profile')
 
-@app.route('/addfood')
-def profile():
-	form = AddForm()
+#am i supposed to add in a post AND a get route???
+#if i dont include POST or GET does it just default use on both? i.e. no method = ... it will use this for post of get or will say i need post even if it works for post
+@app.route('/addfood', methods = ["GET"])
+#have to parse form on view 
+def addfood_get():
+	form = AddForm() # do i need this line here if I am seperating GET and POST? Also can i put them in the same route and seperate with an if?
 	return render_template("addfood.html",
 		title = 'Add Food',
 		user = user,
 		foods = foods,
 		form = form)
+
+@app.route('/addfood', methods = ["POST"])
+def addfood_post():
+	form = AddForm(
+		style = request.form["style"],
+		resturant = request.form["resturant"],
+		dish = request.form["dish"],
+		cat1 = request.form["cat1"], #does this work when using radio buttons
+		cat2 = request.form["cat2"] #does this work when using radio buttons
+		)
+	session.add(form)
+	session.commit()
+	return redirect(url_for("index")) #is this how you use this?
 
 
