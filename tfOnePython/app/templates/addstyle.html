@@ -1,0 +1,13 @@
+		{% extends "base.html" %}
+		{% block content %}
+		<h1>Hello, Friends you can add a new styles here!!!</h1>
+		<form action="/addstyle" method="POST">
+			{{form.hidden_tag()}}
+			<p>
+				Style: {{form.style(size=50)}}<br>
+			</p>
+			<p>
+				<input type="submit" value="Submit Style">
+			</p>
+		</form>
+		{% endblock %}

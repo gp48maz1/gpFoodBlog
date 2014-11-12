@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request
 from app import app
-from addfoodforms import AddForm
-from database import session #where did the database we created last time go?
+from addfoodforms import AddForm, StyleForm, RestaurantForm
+from models import db, Food, Style, Restaurant #where did the database we created last time go?
 
 user = { 'nickname': 'Mazzone'}
 
@@ -100,16 +100,27 @@ def about():
 
 @app.route('/styles')
 def styles():
-	styles = [
-		{'name': 'Italian'},
-		{'name': 'Mexican'},
-		{'name': 'Thai'},
-		{'name': 'American'}
-		]
+	styles = Style.query.all()
+		#[
+		#{'name': 'Italian'},
+		#{'name': 'Mexican'},
+		#{'name': 'Thai'},
+		#{'name': 'American'}
+		#]
 	return render_template("styles.html",
 		title = 'Styles',
 		user = user,
-		styles = styles)	
+		styles = styles)
+
+@app.route('/styles')
+def styles():
+	styles = Style.query.all(),
+	restaurants = Restaurant.query.all()
+	return render_template("styles.html",
+		title = 'Styles',
+		user = user,
+		styles = styles, 
+		restaurants = restaurants)	
 
 @app.route('/styles/italian')
 def italian():
@@ -167,6 +178,45 @@ def profile():
 	return render_template("profile.html",
 		title = 'Profile')
 
+@app.route('/addstyle', methods = ["GET"])
+def addstyle_get():
+	form = StyleForm()
+	return render_template("addstyle.html",
+		title = 'Add Style',
+		user = user,
+		form = form)
+
+@app.route('/addstyle', methods = ["POST"])
+def addstyle_post():
+	form = StyleForm()
+	style =  Style(
+		name = request.form["style"]
+		)
+	db.session.add(style)
+	db.session.commit()
+	return redirect(url_for("index"))
+
+@app.route('/addrestaurant', methods = ["GET"])
+def addrestaurant_get():
+	form = RestaurantForm(),
+	styles = Style.query.all()
+	return render_template("addrestaurant.html",
+		title = 'Add Restaurant',
+		styles = styles,
+		user = user,
+		form = form)
+
+@app.route('/addrestaurant', methods = ["POST"])
+def addrestaurant_post():
+	form = RestaurantForm()
+	restaurant =  Restaurant(
+		style_id = request.form["style"],
+		name = request.form["restaurant"]
+		)
+	db.session.add(restaurant)
+	db.session.commit()
+	return redirect(url_for("index"))
+
 #am i supposed to add in a post AND a get route???
 #if i dont include POST or GET does it just default use on both? i.e. no method = ... it will use this for post of get or will say i need post even if it works for post
 @app.route('/addfood', methods = ["GET"])
@@ -181,14 +231,15 @@ def addfood_get():
 
 @app.route('/addfood', methods = ["POST"])
 def addfood_post():
-	form = AddForm(
-		style = request.form["style"],
-		resturant = request.form["resturant"],
-		dish = request.form["dish"],
+	form = AddForm()
+	food = Food(
+		style = request.form["style"], # needs to be a drop down from available 
+		resturant = request.form["resturant"], # drop down from available
+		item = request.form["dish"],
 		cat1 = request.form["cat1"], #does this work when using radio buttons
 		cat2 = request.form["cat2"] #does this work when using radio buttons
 		)
-	session.add(form)
+	session.add(food)
 	session.commit()
 	return redirect(url_for("index")) #is this how you use this?
 

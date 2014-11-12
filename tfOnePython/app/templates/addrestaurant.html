@@ -1,0 +1,21 @@
+		{% extends "base.html" %}
+		{% block content %}
+		<h1>Hello, Friends you can add a new restaurants here!!!</h1>
+		<form action="/addrestaurant" method="POST">
+			{{form.hidden_tag()}}
+			<p>
+				Style: 
+				<select name = "style">
+					{% for style in styles %}
+					<option value= "{{style.id}}">{{ style.name }}</option>
+					{% endfor %}
+				</select>
+			</p>
+			<p>
+				Restaurant: {{form.restaurant(size=50)}}<br>
+			</p>
+			<p>
+				<input type="submit" value="Submit Restaurant">
+			</p>
+		</form>
+		{% endblock %}

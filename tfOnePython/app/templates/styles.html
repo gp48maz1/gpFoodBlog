@@ -8,4 +8,9 @@
 			<li><a href="/styles/mexican">Mexican</a></li>
 			<li><a href="/styles/thai">Thai</a></li>
 		</ul>
+		<ul class = "food test">
+			{% for style in styles %}
+			<li>{{ style.name }}</li>
+			{% endfor %}
+		</ul>
 		{% endblock %}
