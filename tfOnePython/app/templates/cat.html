@@ -1,0 +1,20 @@
+		{% extends "base.html" %}
+		{% block content %}
+		<h1>Hello, Friends lets talk about Categories!!!</h1>
+		<!--
+		<ul class = "food menu">
+			<li>Food Blog Styles: </li>
+			<li><a href="/styles/american">American</a></li>
+		</ul>
+		-->
+		<ul class = "cat1 test">
+			{% for cat in cat1 %}
+			<li> {{cat.name}} </li>
+			{% endfor %}
+		</ul>
+		<ul class = "cat2 test">
+			{% for cat in cat2 %}
+			<li> {{cat.name}} </li>
+			{% endfor %}
+		</ul>
+		{% endblock %}

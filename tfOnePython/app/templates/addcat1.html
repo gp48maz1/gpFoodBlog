@@ -1,0 +1,13 @@
+		{% extends "base.html" %}
+		{% block content %}
+		<h1>Hello, Friends you can add a new Category 1 items here!!!</h1>
+		<form action="/addcat1" method="POST">
+			{{form.hidden_tag()}}
+			<p>
+				Category1: {{form.category1(size=50)}}<br>
+			</p>
+			<p>
+				<input type="submit" value="Submit Style">
+			</p>
+		</form>
+		{% endblock %}

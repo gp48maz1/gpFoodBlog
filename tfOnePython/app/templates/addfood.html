@@ -1,22 +1,37 @@
 		{% extends "base.html" %}
 		{% block content %}
-		<h1>Hello, Friends you can add a new food/ resturant here!!!</h1>
+		<h1>Hello, Friends you can add a new food here!!!</h1>
 		<form action="/addfood" method="POST">
 			{{form.hidden_tag()}}
+			<!--
+			Is there a way to desplay the style of a choosen resturant?
+			-->
 			<p>
-				Style: {{form.style(size=50)}}<br>
-			</p>
-			<p>
-				Resturant: {{form.resturant(size=50)}}<br>
+				Restaurant: 
+				<select name = "restaurant">
+					{% for restaurant in restaurants %}
+					<option value= "{{restaurant.id}}">{{ restaurant.name }}</option>
+					{% endfor %}
+				</select><br>
 			</p>
 			<p>
 				Name of Dish: {{form.dish(size=50)}}<br>
 			</p>
 			<p>
-				Type of Dish: {{form.cat1()}}<br>
+				Type of Dish:  
+				<select name = "cat1">
+					{% for cat1 in cat1s %}
+					<option value= "{{cat1.id}}">{{ cat1.name }}</option>
+					{% endfor %}
+				</select><br>
 			</p>
 			<p>
-				Type of Meat: {{form.cat2()}}<br>
+				Type of Meat:  
+				<select name = "cat2">
+					{% for cat2 in cat2s %}
+					<option value= "{{cat2.id}}">{{ cat2.name }}</option>
+					{% endfor %}
+				</select><br>
 			</p>
 			<p>
 				<input type="submit" value="Submit Dish">

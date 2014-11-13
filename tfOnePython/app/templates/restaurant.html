@@ -9,7 +9,7 @@
 		-->
 		<ul class = "food test2">
 			{% for restaurant in restaurants %}
-			<li>{{ restaurant.name }}</li>
+			<li>ID {{restaurant.style_ID}} meaning {{restaurant.Style.name}} style for, {{ restaurant.name }}</li>
 			{% endfor %}
 		</ul>
 		{% endblock %}

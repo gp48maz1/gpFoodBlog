@@ -1,4 +1,5 @@
 from . import db #I got this from the __init__ but why can i feed in SQLAlchemy(app)
+from flask.ext.login import UserMixin 
 # use . cause already in app folder
 #from sqlalchemy import Column, Integer, Foreign Key, create_engine, String -- I assume I dont need cause of the above?
 #from sqlalchemy.orm import relationship, sessionmaker --Needed? cause of app?
@@ -19,17 +20,30 @@ REST_MYHOUSE = 1
 REST_WHISKEYKITCHEN = 2
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
 	nickname = db.Column(db.String(64), index = True, unique = True) #why index?
 	email = db.Column(db.String(120), index = True, unique = True) #why index?
 	role = db.Column(db.SmallInteger, default = ROLE_USER)
+	password = db.Column(db.String(128))
 	posts = db.relationship('Post', backref = 'author', lazy = 'dynamic') #lazy dynamic?; backref author?
 	foods = db.relationship("Food", backref = 'User') #need db.?
 
 	#what is this line
 	def __repr__(self):
 		return '<User %r>' % (self.nickname)
+
+	def __init__(self, firstname, lastname, email, password):
+		self.firstname = firstname.title()
+		self.lastname = lastname.title()
+		self.email = email.lower()
+		self.set_password(password)
+
+	def set_password(self, password):
+		self.pwdhash = generate_password_hash(password)
+
+	def check_password(self, password):
+		return check_password_hash(self.pwdhash, password)
 
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key = True)

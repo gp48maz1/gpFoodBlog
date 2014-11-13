@@ -1,9 +1,13 @@
 from flask import render_template, redirect, url_for, request
 from app import app
-from addfoodforms import AddForm, StyleForm, RestaurantForm
-from models import db, Food, Style, Restaurant #where did the database we created last time go?
+from addfoodforms import FoodForm, StyleForm, RestaurantForm, Category1Form, Category2Form
+from models import db, Food, Style, Restaurant, Category1, Category2
+from datetime import datetime 
 
-user = { 'nickname': 'Mazzone'}
+user = { 
+		'nickname': 'Mazzone',
+		'userID': '1000'
+		}
 
 foods = [
 	{
@@ -112,15 +116,25 @@ def styles():
 		user = user,
 		styles = styles)
 
-@app.route('/styles')
-def styles():
+@app.route('/restaurant')
+def restaurant():
 	styles = Style.query.all(),
 	restaurants = Restaurant.query.all()
-	return render_template("styles.html",
-		title = 'Styles',
+	return render_template("restaurant.html",
+		title = 'Restaurant',
 		user = user,
 		styles = styles, 
 		restaurants = restaurants)	
+
+@app.route('/cat')
+def cat():
+	cat1 = Category1.query.all()
+	cat2 = Category2.query.all()
+	return render_template("cat.html",
+		title = 'Categories',
+		user = user,
+		cat1 = cat1,
+		cat2 = cat2)	
 
 @app.route('/styles/italian')
 def italian():
@@ -196,9 +210,10 @@ def addstyle_post():
 	db.session.commit()
 	return redirect(url_for("index"))
 
+#This is for Adding Resturants
 @app.route('/addrestaurant', methods = ["GET"])
 def addrestaurant_get():
-	form = RestaurantForm(),
+	form = RestaurantForm() #why did a comma mess this up?
 	styles = Style.query.all()
 	return render_template("addrestaurant.html",
 		title = 'Add Restaurant',
@@ -210,37 +225,81 @@ def addrestaurant_get():
 def addrestaurant_post():
 	form = RestaurantForm()
 	restaurant =  Restaurant(
-		style_id = request.form["style"],
+		style_ID = request.form["style"],
 		name = request.form["restaurant"]
 		)
 	db.session.add(restaurant)
 	db.session.commit()
 	return redirect(url_for("index"))
 
+#This is for Adding Categories
+@app.route('/addcat1', methods = ["GET"])
+def addcat1_get():
+	form = Category1Form() 
+	return render_template("addcat1.html",
+		title = 'Add Category1',
+		user = user,
+		form = form)
+
+@app.route('/addcat1', methods = ["POST"])
+def addcat1_post():
+	form = Category1Form()
+	category1 =  Category1(
+		name = request.form["category1"]
+		)
+	db.session.add(category1)
+	db.session.commit()
+	return redirect(url_for("index"))
+
+@app.route('/addcat2', methods = ["GET"])
+def addcat2_get():
+	form = Category2Form() 
+	return render_template("addcat2.html",
+		title = 'Add Category2',
+		user = user,
+		form = form)
+
+@app.route('/addcat2', methods = ["POST"])
+def addcat2_post():
+	form = Category2Form()
+	category2 =  Category2(
+		name = request.form["category2"]
+		)
+	db.session.add(category2)
+	db.session.commit()
+	return redirect(url_for("index"))
+
 #am i supposed to add in a post AND a get route???
 #if i dont include POST or GET does it just default use on both? i.e. no method = ... it will use this for post of get or will say i need post even if it works for post
 @app.route('/addfood', methods = ["GET"])
-#have to parse form on view 
 def addfood_get():
-	form = AddForm() # do i need this line here if I am seperating GET and POST? Also can i put them in the same route and seperate with an if?
+	form = FoodForm() # do i need this line here if I am seperating GET and POST? Also can i put them in the same route and seperate with an if?
+	restaurants = Restaurant.query.all()
+	cat1s = Category1.query.all()
+	cat2s = Category2.query.all()
 	return render_template("addfood.html",
 		title = 'Add Food',
 		user = user,
-		foods = foods,
+		restaurants = restaurants,
+		cat1s = cat1s,
+		cat2s = cat2s,
 		form = form)
 
 @app.route('/addfood', methods = ["POST"])
 def addfood_post():
-	form = AddForm()
+	form = FoodForm()
 	food = Food(
-		style = request.form["style"], # needs to be a drop down from available 
-		resturant = request.form["resturant"], # drop down from available
+		resturant_ID = request.form["restaurant"],
 		item = request.form["dish"],
-		cat1 = request.form["cat1"], #does this work when using radio buttons
-		cat2 = request.form["cat2"] #does this work when using radio buttons
+		category1_ID = request.form["cat1"], 
+		category2_ID = request.form["cat2"],
+		userID_entered = user.userID, #HOW DO I DO THIS?
+		timestamp = datetime.datetime.utcnow()
 		)
 	session.add(food)
 	session.commit()
 	return redirect(url_for("index")) #is this how you use this?
+
+#This is attempt to set up sign up for project 1111111111111111111111111111111111111111111111111111111111111
 
 
