@@ -22,11 +22,12 @@ REST_WHISKEYKITCHEN = 2
 
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
-	nickname = db.Column(db.String(64), index = True, unique = True) #why index?
+	firstname = db.Column(db.String(64), unique = True) #why index?
+	lastname = db.Column(db.String(64), unique = True)
 	email = db.Column(db.String(120), index = True, unique = True) #why index?
 	role = db.Column(db.SmallInteger, default = ROLE_USER)
-	password = db.Column(db.String(128))
-	posts = db.relationship('Post', backref = 'author', lazy = 'dynamic') #lazy dynamic?; backref author?
+	pwdhash = db.Column(db.String(128)) #this need to be the pwdhash??? i used password before do i need to update anything?
+	posts = db.relationship('Post', backref = 'User', lazy = 'dynamic') #lazy dynamic?; backref author?
 	foods = db.relationship("Food", backref = 'User') #need db.?
 
 	#what is this line

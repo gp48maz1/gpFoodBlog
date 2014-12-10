@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from app import app
-from addfoodforms import FoodForm, StyleForm, RestaurantForm, Category1Form, Category2Form
-from models import db, Food, Style, Restaurant, Category1, Category2
+from addfoodforms import FoodForm, StyleForm, RestaurantForm, Category1Form, Category2Form, SignupForm
+from models import db, User, Food, Style, Restaurant, Category1, Category2
 from datetime import datetime 
 
 user = { 
@@ -101,6 +101,23 @@ def index():
 def about():
 	return render_template("about.html",
 		title = 'About')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	form = SignupForm()
+
+	if request.method == 'POST':
+		if form.validate() == False:
+			return render_template('signup.html', form=form)
+		else:
+			newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data)
+			db.session.add(newuser)
+			db.session.commit()
+			session['email'] = newuser.email
+			return redirect(url_for('profile'))
+			#"[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
+	elif request.method == 'GET':
+		return render_template('signup.html', form=form)
 
 @app.route('/styles')
 def styles():
